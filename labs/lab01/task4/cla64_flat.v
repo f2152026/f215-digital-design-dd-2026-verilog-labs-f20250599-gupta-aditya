@@ -17,6 +17,7 @@ module cla64_flat(
 
   // ---------------------------------------------------------------------
   // Step 1: generate/propagate signals -- WORKED EXAMPLE
+  
   //
   // This part is genuinely uniform across all 64 bits (same operation at
   // every position), so a generate-for loop is the right tool here.

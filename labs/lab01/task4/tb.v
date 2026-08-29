@@ -5,6 +5,7 @@
 // via the vcd plusarg -- you don't need to choose or specify one.
 
 module tb;
+
   reg  [63:0] t_a, t_b;
   reg         t_cin;
   wire [63:0] t_sum;
