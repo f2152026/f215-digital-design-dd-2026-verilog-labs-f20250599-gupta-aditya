@@ -16,6 +16,11 @@
 // Identical structure to Task 2's ripple_adder -- reuse your wiring
 // pattern directly.
 
+// rca.v
+
+// Delayed 4-bit ripple-carry adder.
+// Reuses the delay-annotated FA_Gate from Task 2.
+
 module rca(
 
   input  [3:0] a,
@@ -28,8 +33,7 @@ module rca(
 
   wire c1, c2, c3;
 
-  // Ripple Carry logic
-
+  // FA0: a[0], b[0], cin -> sum[0], c1
   FA_Gate FA0 (
     .a(a[0]),
     .b(b[0]),
@@ -38,6 +42,7 @@ module rca(
     .cout(c1)
   );
 
+  // FA1: a[1], b[1], c1 -> sum[1], c2
   FA_Gate FA1 (
     .a(a[1]),
     .b(b[1]),
@@ -46,6 +51,7 @@ module rca(
     .cout(c2)
   );
 
+  // FA2: a[2], b[2], c2 -> sum[2], c3
   FA_Gate FA2 (
     .a(a[2]),
     .b(b[2]),
@@ -54,6 +60,7 @@ module rca(
     .cout(c3)
   );
 
+  // FA3: a[3], b[3], c3 -> sum[3], cout
   FA_Gate FA3 (
     .a(a[3]),
     .b(b[3]),
