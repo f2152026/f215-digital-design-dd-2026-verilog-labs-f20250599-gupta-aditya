@@ -39,6 +39,8 @@ module rca(
     .b(b[0]),
     .cin(cin),
     .sum(sum[0]),
+
+    
     .cout(c1)
   );
 
