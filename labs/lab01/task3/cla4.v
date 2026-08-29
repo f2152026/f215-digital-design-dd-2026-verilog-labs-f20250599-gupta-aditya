@@ -19,6 +19,8 @@
 // TODO -- Step 3: sum bits
 //   sum[i] = p[i] ^ c[i]     (c0 = cin)
 
+// cla4.v
+
 module cla4(
   input  [3:0] a,
   input  [3:0] b,
@@ -31,7 +33,51 @@ module cla4(
   wire g0, g1, g2, g3;
   wire c1, c2, c3;
 
-  // TODO: your gate-level P/G, carry, and sum logic goes here.
-  // (cout should be connected to c4.) Remember the delay on every gate.
+  // Intermediate wires required to connect AND gate outputs to OR gate inputs
+  wire p0_cin;
+  wire p1_g0, p1_p0_cin;
+  wire p2_g1, p2_p1_g0, p2_p1_p0_cin;
+  wire p3_g2, p3_p2_g1, p3_p2_p1_g0, p3_p2_p1_p0_cin;
+
+  // Step 1: Generate (g) and Propagate (p) signals
+  xor #(2) x_p0 (p0, a[0], b[0]);
+  xor #(2) x_p1 (p1, a[1], b[1]);
+  xor #(2) x_p2 (p2, a[2], b[2]);
+  xor #(2) x_p3 (p3, a[3], b[3]);
+
+  and #(2) a_g0 (g0, a[0], b[0]);
+  and #(2) a_g1 (g1, a[1], b[1]);
+  and #(2) a_g2 (g2, a[2], b[2]);
+  and #(2) a_g3 (g3, a[3], b[3]);
+
+  // Step 2: Direct carry equations
+  
+  // c1 = g0 + p0.cin
+  and #(2) a_p0_cin (p0_cin, p0, cin);
+  or  #(2) o_c1     (c1, g0, p0_cin);
+
+  // c2 = g1 + p1.g0 + p1.p0.cin
+  and #(2) a_p1_g0     (p1_g0, p1, g0);
+  and #(2) a_p1_p0_cin (p1_p0_cin, p1, p0, cin);
+  or  #(2) o_c2        (c2, g1, p1_g0, p1_p0_cin);
+
+  // c3 = g2 + p2.g1 + p2.p1.g0 + p2.p1.p0.cin
+  and #(2) a_p2_g1        (p2_g1, p2, g1);
+  and #(2) a_p2_p1_g0     (p2_p1_g0, p2, p1, g0);
+  and #(2) a_p2_p1_p0_cin (p2_p1_p0_cin, p2, p1, p0, cin);
+  or  #(2) o_c3           (c3, g2, p2_g1, p2_p1_g0, p2_p1_p0_cin);
+
+  // cout (c4) = g3 + p3.g2 + p3.p2.g1 + p3.p2.p1.g0 + p3.p2.p1.p0.cin
+  and #(2) a_p3_g2           (p3_g2, p3, g2);
+  and #(2) a_p3_p2_g1        (p3_p2_g1, p3, p2, g1);
+  and #(2) a_p3_p2_p1_g0     (p3_p2_p1_g0, p3, p2, p1, g0);
+  and #(2) a_p3_p2_p1_p0_cin (p3_p2_p1_p0_cin, p3, p2, p1, p0, cin);
+  or  #(2) o_c4              (cout, g3, p3_g2, p3_p2_g1, p3_p2_p1_g0, p3_p2_p1_p0_cin);
+
+  // Step 3: Sum bits
+  xor #(2) s_sum0 (sum[0], p0, cin);
+  xor #(2) s_sum1 (sum[1], p1, c1);
+  xor #(2) s_sum2 (sum[2], p2, c2);
+  xor #(2) s_sum3 (sum[3], p3, c3);
 
 endmodule
