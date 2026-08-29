@@ -47,7 +47,6 @@ module rca(
   FA_Gate FA3 (
     .a    (a[3]),
     .b    (b[3]),
-    
     .cin  (c3),
     .sum  (sum[3]),
     .cout (cout)
